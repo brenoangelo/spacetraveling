@@ -1,1 +1,47 @@
-// TODO
+
+@import '../styles/common.module.scss';
+
+.main {
+  margin-top: 2.5rem;
+}
+
+.postSingle {
+  margin-bottom: 48px;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gray-100);
+    display: inline-block;
+
+    transition: color 0.3s;
+
+    &:hover {
+      color: var(--purple-300);
+    }
+  }
+
+  p {
+    color: var(--gray-200);
+    margin-top: 0.5rem;
+    font-size: 1.25rem;
+  }
+}
+
+.paginationButton {
+  background: transparent;
+  border: 0;
+
+  color: var(--purple-300);
+  font-size: 1.25rem;
+
+  transition: transform 0.3s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:focus {
+    outline: 0;
+  }
+}

@@ -1,1 +1,38 @@
-// TODO
+@import '../../styles/common.module.scss';
+
+.post {
+  header {
+    margin-bottom: 80px;
+    img {
+      width: 100%;
+    }
+  }
+}
+
+.postHeader {
+  margin-bottom: 108px;
+
+  h1 {
+    margin-bottom: 24px;
+    font-size: 3.5rem;
+    color: var(--gray-100);
+  }
+}
+
+.paragraph {
+  margin-bottom: 80px;
+
+  h2 {
+    color: var(--gray-100);
+    font-size: 2.25rem;
+    margin: 2.25rem 0;
+  }
+
+  p {
+    color: var(--gray-100);
+
+    strong {
+      color: var(--purple-300);
+    }
+  }
+}

@@ -1,1 +1,30 @@
-// TODO
+.container {
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 0.25rem;
+}
+
+.postSingleDetails {
+  display: flex;
+  color: var(--gray-200);
+  margin-top: 1.5rem;
+  align-items: center;
+  gap: 2.25rem;
+
+  time {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+
+    font-size: 1rem;
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+
+    font-size: 1rem;
+  }
+}
