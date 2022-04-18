@@ -10,6 +10,8 @@ import { FiCalendar, FiUser } from 'react-icons/fi';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import Head from 'next/head';
 
 interface Post {
   uid?: string;
@@ -47,42 +49,51 @@ export default function Home({ postsPagination }: HomeProps) {
     fetch(page)
       .then(res => res.json())
       .then(json => {
+        const postsNextPage = posts.concat(json.results);
+
         setPage(json.next_page);
-        setPosts(state => [...state, json.results[0]]);
+        setPosts(postsNextPage);
       });
   }
 
   return (
-    <main className={styles.main}>
-      <div className={styles.container}>
-        {posts.map(post => (
-          <article className={styles.postSingle}>
-            <a href="">
-              <h1>{post.data.title}</h1>
-            </a>
-            <p>{post.data.subtitle}</p>
-            <span className={styles.postSingleDetails}>
-              <time>
-                <FiCalendar size={20} />
-                {format(new Date(post.first_publication_date), 'PP', {
-                  locale: ptBR,
-                })}
-              </time>
-              <span>
-                <FiUser size={20} /> {post.data.author}
+    <>
+      <Head>
+        <title>Home | spacetraveling</title>
+      </Head>
+      <main className={styles.main}>
+        <div className={styles.container}>
+          {posts.map(post => (
+            <article className={styles.postSingle}>
+              <Link href={`/post/${post.uid}`}>
+                <a>
+                  <h1>{post.data.title}</h1>
+                </a>
+              </Link>
+              <p>{post.data.subtitle}</p>
+              <span className={styles.postSingleDetails}>
+                <time>
+                  <FiCalendar size={20} />
+                  {format(new Date(post.first_publication_date), 'PP', {
+                    locale: ptBR,
+                  })}
+                </time>
+                <span>
+                  <FiUser size={20} /> {post.data.author}
+                </span>
               </span>
-            </span>
-          </article>
-        ))}
+            </article>
+          ))}
 
-        <button
-          className={styles.paginationButton}
-          onClick={() => handleNextPage()}
-        >
-          Carregar mais posts
-        </button>
-      </div>
-    </main>
+          <button
+            className={styles.paginationButton}
+            onClick={() => handleNextPage()}
+          >
+            Carregar mais posts
+          </button>
+        </div>
+      </main>
+    </>
   );
 }
 
@@ -93,13 +104,13 @@ export const getStaticProps: GetStaticProps = async () => {
     [Prismic.predicates.at('document.type', 'post')],
     {
       fetch: ['post.title', 'post.subtitle', 'post.content', 'post.author'],
-      pageSize: 1,
+      pageSize: 4,
     }
   );
 
   const posts = response.results.map(post => {
     return {
-      slug: post.uid,
+      uid: post.uid,
       first_publication_date: post.first_publication_date,
       data: {
         title: post.data.title,
