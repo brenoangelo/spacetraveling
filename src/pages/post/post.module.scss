@@ -1,8 +1,13 @@
 @import '../../styles/common.module.scss';
 
 .post {
+  padding-bottom: 80px;
+
   header {
     margin-bottom: 80px;
+    max-height: 400px;
+    overflow-y: hidden;
+    
     img {
       width: 100%;
     }
@@ -19,20 +24,29 @@
   }
 }
 
-.paragraph {
-  margin-bottom: 80px;
+.postParagraph {
+  color: var(--gray-100);
+
+  & + .postParagraph {
+    margin-top: 3rem;
+  }
 
   h2 {
-    color: var(--gray-100);
-    font-size: 2.25rem;
-    margin: 2.25rem 0;
+    font-size: 3rem;
+    margin-bottom: 2rem;
   }
 
-  p {
-    color: var(--gray-100);
+  a {
+    color: var(--purple-300);
 
-    strong {
-      color: var(--purple-300);
+    transition: filter 0.3s;
+    &:hover {
+      filter: brightness(0.7);
     }
   }
+}
+
+.paragraphContent {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }

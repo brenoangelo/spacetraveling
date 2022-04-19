@@ -37,9 +37,16 @@ export default function Post({ post }: PostProps) {
       <Head>
         <title>{post.data.title} | spacetraveling</title>
       </Head>
-      <main className={styles.post}>
+      <div className={styles.post}>
         <header>
-          <img src={post.data.banner.url} alt={post.data.title} />
+          <img
+            src={
+              post.data.banner.url
+                ? post.data.banner.url
+                : '/images/bannerDefault.jpg'
+            }
+            alt={post.data.title}
+          />
         </header>
         <div className={styles.container}>
           <div className={styles.postHeader}>
@@ -60,19 +67,22 @@ export default function Post({ post }: PostProps) {
             </span>
           </div>
 
-          <div>
+          <main className={styles.postContent}>
             {post.data.content.map(content => (
-              <div>
+              <div className={styles.postParagraph}>
                 <h2>{content.heading}</h2>
 
                 {content.body.map(body => (
-                  <div dangerouslySetInnerHTML={{ __html: body.text }}/>
+                  <div
+                    className={styles.paragraphContent}
+                    dangerouslySetInnerHTML={{ __html: body.text }}
+                  />
                 ))}
               </div>
             ))}
-          </div>
+          </main>
         </div>
-      </main>
+      </div>
     </>
   );
 }
@@ -103,22 +113,22 @@ export const getStaticProps: GetStaticProps = async context => {
   const post = {
     first_publication_date: response.first_publication_date,
     data: {
-      title:response.data.title,
+      title: response.data.title,
       banner: {
         url: response.data.main.url ?? '',
       },
       author: response.data.author,
       content: response.data.content.map(content => ({
         heading: content.heading,
-        body: content.body 
-          ? content.body.map(body => ({text: RichText.asHtml(content.body)}))
-          : []
-      }))
+        body: content.body
+          ? content.body.map(body => ({ text: RichText.asHtml(content.body) }))
+          : [],
+      })),
     },
   };
 
-  // console.log(JSON.stringify(response, null, 2))
-  console.log(JSON.stringify(post, null, 2))
+  console.log(JSON.stringify(response, null, 2))
+  console.log(JSON.stringify(post, null, 2));
 
   return {
     props: {
