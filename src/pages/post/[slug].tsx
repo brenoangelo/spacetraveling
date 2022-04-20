@@ -118,17 +118,15 @@ export const getStaticProps: GetStaticProps = async context => {
         url: response.data.main.url ?? '',
       },
       author: response.data.author,
-      content: response.data.content.map(content => ({
-        heading: content.heading,
-        body: content.body
-          ? content.body.map(body => ({ text: RichText.asHtml(content.body) }))
-          : [],
+      content: response.data.content.map(contentItem => ({
+        heading: contentItem.heading,
+        body: contentItem.body.map(bodyItem => ({
+            text: RichText.asHtml([bodyItem])
+          }))
+        
       })),
     },
   };
-
-  console.log(JSON.stringify(response, null, 2))
-  console.log(JSON.stringify(post, null, 2));
 
   return {
     props: {
