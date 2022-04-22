@@ -6,9 +6,12 @@ import { FiCalendar, FiClock, FiUser } from 'react-icons/fi';
 import { getPrismicClient } from '../../services/prismic';
 
 import Prismic from '@prismicio/client';
+import PrismicDOM from 'prismic-dom'
 
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
+import ptBR from 'date-fns/locale/pt-BR';
+import { format } from 'date-fns';
 
 interface Post {
   first_publication_date: string | null;
@@ -32,6 +35,15 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps) {
+  const wordsLength = post.data.content.reduce((acc, valorAtual) => {
+    let tamanho = PrismicDOM.RichText.asText(valorAtual.body).replace(/<[^>]*>/g, '').split(' ')
+    acc = tamanho.concat(valorAtual.heading.split(' ')).length
+
+    return acc
+  },0)
+
+  const readingTime = Math.ceil(wordsLength / 200)
+
   return (
     <>
       <Head>
@@ -62,16 +74,15 @@ export default function Post({ post }: PostProps) {
               </span>
 
               <time>
-                <FiClock size={20} />4 min
+                <FiClock size={20} />{readingTime} min
               </time>
             </span>
           </div>
 
           <main className={styles.postContent}>
-            {post.data.content.map(content => (
-              <div className={styles.postParagraph}>
+            {post.data.content.map((content, index) => (
+              <div className={styles.postParagraph} key={index}>
                 <h2>{content.heading}</h2>
-
                 {content.body.map(body => (
                   <div
                     className={styles.paragraphContent}
@@ -88,21 +99,21 @@ export default function Post({ post }: PostProps) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // const prismic = getPrismicClient();
-  // const posts = await prismic.query([
-  //   Prismic.predicates.at('document.type', 'post')
-  // ], {
-  //   fetch: ['post.uid']
-  // });
+  const prismic = getPrismicClient();
+  const posts = await prismic.query([
+    Prismic.predicates.at('document.type', 'post')
+  ], {
+    fetch: ['post.uid']
+  });
 
-  // return {
-  //   paths: [{ params: { uid: String(posts.results) } }],
-  //   fallback: 'blocking'
-  // }
+  const postsSlugs = posts.results.map(post => ({
+    params: {slug: post.uid}
+  }))
+
   return {
-    paths: [],
-    fallback: 'blocking',
-  };
+    paths: [...postsSlugs],
+    fallback: 'blocking'
+  }
 };
 
 export const getStaticProps: GetStaticProps = async context => {
@@ -111,7 +122,13 @@ export const getStaticProps: GetStaticProps = async context => {
   const response = await prismic.getByUID('post', String(slug), {});
 
   const post = {
-    first_publication_date: response.first_publication_date,
+    first_publication_date: format(
+      new Date(response.first_publication_date),
+      'PP',
+      {
+        locale: ptBR,
+      }
+    ),
     data: {
       title: response.data.title,
       banner: {
